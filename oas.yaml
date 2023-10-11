@@ -553,84 +553,11 @@ components:
           type: boolean
           description: true if the identity of this user has been verified by the operator or a third party; and the firstName, lastName, birthdate have been confirmed as identitical to an official identity proof document. Can be left empty if the information is not available.
           
-    Trip:
-      type: object
-      required:
-        - duration
-        - operator
-        - passengerPickupLat
-        - passengerPickupLng
-        - passengerDropLat
-        - passengerDropLng
-      properties:
-        operator:
-          type: string
-          description: The operator identifier. MUST be a Root Domain (example operator.org) owned by the operator or a Fully Qualified Domain Name (example carpool.mycity.com) exclusively operated by the operator. A given operator SHOULD always send the same value.
-        passengerPickupLat:
-          type: "number"
-          format: "double"
-          description: Latitude of the passenger pick-up point.
-        passengerPickupLng:
-          type: "number"
-          format: "double"
-          description: Longitude of the passenger pick-up point.
-        passengerDropLat:
-          type: "number"
-          format: "double"
-          description: Latitude of the passenger drop-off point.
-        passengerDropLng:
-          type: "number"
-          format: "double"
-          description: Longitude of the passenger drop-off point.
-        passengerPickupAddress:
-          type: string
-          description: String representing the pickup-up address.
-        passengerDropAddress:
-          type: string
-          description: String representing the drop-off address.
-        distance:
-          type: "integer"
-          description: Carpooling distance in meters.
-        driverDepartureLat:
-          type: "number"
-          format: "double"
-          description: Latitude of the departure.
-        driverDepartureLng:
-          type: "number"
-          format: "double"
-          description: Longitude of the departure.
-        driverArrivalLat:
-          type: "number"
-          format: "double"
-          description: Latitude of the arrival.
-        driverArrivalLng:
-          type: "number"
-          format: "double"
-          description: Longitude of the arrival.
-        driverDepartureAddress:
-          type: string
-          description: String representing the departure address of the driver.
-        driverArrivalAddress:
-          type: string
-          description: String representing the arrival address of the driver.
-        duration:
-          type: integer
-          description: Carpooling duration in seconds.
-        journeyPolyline:
-          type: string
-          description: |-
-            Carpooling journey itinerary as a
-            [Google Encoded Polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm), compressed at  level 5.            
-        preferences:
-          $ref: '#/components/schemas/Preferences'
-        webUrl:
-          type: string
-          description: URL of the trip on the webservice provider platform.
+
           
     DriverTrip:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Trip'
         - type: object
           required:
             - driver
