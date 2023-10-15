@@ -74,6 +74,8 @@ paths:
       responses:
          201:
           description: Regular driver availabilities set successfully.
+         401:
+          $ref: '#/components/responses/Unauthorized'
          400:
           $ref: '#/components/responses/BadRequest'
          429:
@@ -95,6 +97,8 @@ paths:
       responses:
          201:
           description: Punctual driver availabilities set successfully.
+         401:
+          $ref: '#/components/responses/Unauthorized'
          400:
           $ref: '#/components/responses/BadRequest'
          429:
