@@ -74,8 +74,6 @@ paths:
       responses:
          201:
           description: Regular driver availabilities set successfully.
-         401:
-          $ref: '#/components/responses/Unauthorized'
          400:
           $ref: '#/components/responses/BadRequest'
          429:
@@ -97,8 +95,6 @@ paths:
       responses:
          201:
           description: Punctual driver availabilities set successfully.
-         401:
-          $ref: '#/components/responses/Unauthorized'
          400:
           $ref: '#/components/responses/BadRequest'
          429:
@@ -236,13 +232,13 @@ paths:
       tags:
       - Interact
       summary: Create a punctual outward Booking request.
-      description: Route used to synchronize a Booking request initiated by a platform to the second platform involved in the shared punctual outward journey. While posting a new Booking, its status must always be set first as `status=WAITING_CONFIRMATION`. _Reminder:_ In case of booking without deeplink, the sender platform MUST also store the Booking object, and be ready to receive modifications of it through the PATCH /bookings API endpoint.
+      description: Route used to synchronize a Booking request initiated by a platform to the second platform involved in the shared punctual outward journey. While posting a new Booking, its status must always be set first as `status=WAITING_CONFIRMATION`. 
       operationId: postBookings
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Booking'
+              $ref: '#/components/schemas/BookingRequest'
 
       responses:
         201:
@@ -662,6 +658,12 @@ components:
       type: string
       format: uuid
       description: Booking id is common between both operators, and must be created as a [UUID](https://datatracker.ietf.org/doc/html/rfc4122) by whoever initiates the booking.  Usage of a [4 UUID](https://datatracker.ietf.org/doc/html/rfc4122#section-4.4) generation algorithm is advised.
+    passengerId:
+      type: string
+      format: uuid
+    driverId:
+      type: string
+      format: uuid
     JourneySchedule:
       type: object
       required:
@@ -694,6 +696,30 @@ components:
           - PLANNED
           - DYNAMIC
           - LINE
+          
+    BookingRequest:
+      type: object
+      required:
+        - id
+        - status
+        - price
+        - passengerId
+        - driverId
+      properties:
+    
+        id:
+          $ref: '#/components/schemas/bookingId'
+        passengerId:
+          $ref: '#/components/schemas/passengerId'
+        driverId:
+          $ref: '#/components/schemas/driverId'
+        status:
+          $ref: '#/components/schemas/bookingStatus'
+        price:
+          $ref: '#/components/schemas/Price'
+        car:
+          $ref: '#/components/schemas/Car'
+
           
 
     Booking:
@@ -751,23 +777,11 @@ components:
           type: integer
           description: |
                         Carpooling distance in meters.
-        webUrl:
-          type: string
-          description: URL of the booking on the webservice provider platform.
         price:
           $ref: '#/components/schemas/Price'
         car:
           $ref: '#/components/schemas/Car'
-        driverJourneyId:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: ID of the Driver's journey to which the booking is related (if any). Unique given the `User`'s `operator` property.
-        passengerJourneyId:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: ID of the Passenger's journey to which the booking is related (if any). Unique given the `User`'s `operator` property.
+
 
 
         
@@ -919,3 +933,4 @@ components:
     InternalServerError:
       description: Internal Server Error. Please try again later.
       
+    
