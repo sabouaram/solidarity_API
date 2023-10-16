@@ -39,8 +39,14 @@ paths:
         - $ref: '#/components/parameters/arrivalLat'
         - $ref: '#/components/parameters/arrivalLng'
         - $ref: '#/components/parameters/departureDate'
-        - $ref: '#/components/parameters/timeDelta'
-        - $ref: '#/components/parameters/count'
+        - name: operator
+          in: query
+          description: The operator's FQDN.
+          required: true
+          schema:
+            type: string
+
+      
       responses:
         200:
           description: Ok. Request processed successfully.
@@ -172,6 +178,12 @@ paths:
       description: Route used to filter and retrieve bookings based on the specified status, type, and ID.
       operationId: filterBookingsByStatus
       parameters:
+      - name: operator
+        in: query
+        description: The operator's FQDN.
+        required: true
+        schema:
+          type: string
       - name: status
         description: The status of the bookings to filter.
         in: query
@@ -264,6 +276,12 @@ paths:
       description: Route used to update the status of an existing Booking request. Should be used usually just to confirm, cancel, etc. an existing Booking.
       operationId: patchBookings
       parameters:
+      - name: operator
+        in: query
+        description: The operator's FQDN.
+        required: true
+        schema:
+          type: string      
       - name: bookingId
         in: path
         required: true
@@ -324,6 +342,12 @@ paths:
       description: Route used to retrieve the details of an existing Booking request. Can only be used by the operator having created the Booking request. This route is provided to check if the Booking object state is similar between two operators, but its usage should be required to handle the full use case of a booking.
       operationId: getBookings
       parameters:
+      - name: operator
+        in: query
+        description: The operator's FQDN.
+        required: true
+        schema:
+          type: string
       - name: bookingId
         in: path
         required: true
@@ -705,6 +729,7 @@ components:
         - price
         - passengerId
         - driverId
+        - operator
       properties:
     
         id:
@@ -719,6 +744,8 @@ components:
           $ref: '#/components/schemas/Price'
         car:
           $ref: '#/components/schemas/Car'
+        operator:
+          type: string
 
           
 
@@ -934,3 +961,10 @@ components:
       description: Internal Server Error. Please try again later.
       
     
+servers:
+  # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/salimbouaram12/SOLIDARITYCOOPGO/1.0.0
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/salimbouaram12/COOPGO/1.0.0
