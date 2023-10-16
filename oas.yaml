@@ -960,11 +960,4 @@ components:
     InternalServerError:
       description: Internal Server Error. Please try again later.
       
-    
-servers:
-  # Added by API Auto Mocking Plugin
-  # Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/salimbouaram12/SOLIDARITYCOOPGO/1.0.0
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/salimbouaram12/COOPGO/1.0.0
+
