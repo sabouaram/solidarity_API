@@ -496,9 +496,6 @@ components:
         - $ref: '#/components/schemas/JourneySchedule'
         - type: object
           properties:
-            availableSeats:
-              type: integer
-              description: Available seats in the car.
             price:
               $ref: '#/components/schemas/Price'
 
@@ -578,42 +575,11 @@ components:
       allOf:
         - type: object
           required:
-            - driver
+            - user
           properties:
-            driver:
+            user:
               $ref: '#/components/schemas/User'
-            departureToPickupWalkingDistance:
-              type: integer
-              description: |-
-                Walking distance from the requested departure location
-                to the pick-up location.                
-            departureToPickupWalkingDuration:
-              type: integer
-              description: |-
-                Walking duration from the requested departure location
-                to the pick-up location.                
-            departureToPickupWalkingPolyline:
-              type: string
-              description: |-
-                Walking
-                [Google Encoded Polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm)
-                from the requested departure location to the pick-up location.                
-            dropoffToArrivalWalkingDistance:
-              type: integer
-              description: |-
-                Walking distance to the requested arrival location
-                from the drop-off location.                
-            dropoffToArrivalWalkingDuration:
-              type: integer
-              description: |-
-                Walking duration to the requested arrival location
-                from the drop-off location.                
-            dropoffToArrivalWalkingPolyline:
-              type: string
-              description: |-
-                Walking
-                [Google Encoded Polyline](https://developers.google.com/maps/documentation/utilities/polylinealgorithm)
-                to the requested arrival location from the drop-off location.                
+                
             car:
               $ref: '#/components/schemas/Car'
               
@@ -694,11 +660,7 @@ components:
         - passengerPickupDate
         - type
       properties:
-        id:
-          type: string
-          minLength: 1
-          maxLength: 255
-          description: Journey's id. It MUST be unique for a given operator.
+
         passengerPickupDate:
           type: number
           description: |-
@@ -709,9 +671,7 @@ components:
           description: |-
                         Driver departure datetime as a UNIX UTC timestamp in seconds.
           format: long
-        webUrl:
-          type: string
-          description: URL of the journey on the webservice provider platform. Required to support booking by deeplink.
+
         type:
           type: string
           description: |-
@@ -726,7 +686,6 @@ components:
       required:
         - id
         - status
-        - price
         - passengerId
         - driverId
         - operator
@@ -740,10 +699,6 @@ components:
           $ref: '#/components/schemas/driverId'
         status:
           $ref: '#/components/schemas/bookingStatus'
-        price:
-          $ref: '#/components/schemas/Price'
-        car:
-          $ref: '#/components/schemas/Car'
         operator:
           type: string
 
@@ -850,6 +805,8 @@ components:
           $ref: '#/components/schemas/User'
         preferences:
           $ref: '#/components/schemas/Preferences'
+        car:
+          $ref: '#/components/schemas/Car'
       required:
         - address
         - latitude
@@ -885,6 +842,8 @@ components:
             $ref: '#/components/schemas/User'
         preferences:  # Adding Preferences section within the Driver section
             $ref: '#/components/schemas/Preferences'
+        car:
+            $ref: '#/components/schemas/Car'
       required:
         - address
         - latitude
@@ -960,4 +919,4 @@ components:
     InternalServerError:
       description: Internal Server Error. Please try again later.
       
-
+    
