@@ -2,194 +2,231 @@ openapi: 3.0.0
 info:
   title: Solidarity Mobility API
   version: 1.0.0
+servers:
+# Added by API Auto Mocking Plugin
+- description: SwaggerHub API Auto Mocking
+  url: https://virtserver.swaggerhub.com/salimbouaram12/SOLIDARITYCOOPGO/1.0.0
+- url: /
 paths:
   /passenger:
     post:
-      tags:
-      - Passenger Trip Request
-      summary: Create a Passenger Trip Request
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PassengerTripRequest"
+              $ref: '#/components/schemas/PassengerTripRequest'
+        required: true
       responses:
-        201:
+        "201":
           description: Trip Request Created
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        429:
-          $ref: '#/components/responses/TooManyRequests'
-        500:
-          $ref: '#/components/responses/InternalServerError'
-          
-  /driver_journeys:
-    get:
-      tags:
-      - Search
-      summary: Search for matching punctual planned outward driver journeys.
-      description: Route used to retrieve a collection of punctual planned outward driver journeys matching the provided criteria.
-      operationId: getDriverJourneys
-      parameters:
-        - $ref: '#/components/parameters/departureLat'
-        - $ref: '#/components/parameters/departureLng'
-        - $ref: '#/components/parameters/arrivalLat'
-        - $ref: '#/components/parameters/arrivalLng'
-        - $ref: '#/components/parameters/departureDate'
-        - name: operator
-          in: query
-          description: The operator's FQDN.
-          required: true
-          schema:
-            type: string
-
-      
-      responses:
-        200:
-          description: Ok. Request processed successfully.
+        "400":
           content:
             application/json:
               schema:
+                $ref: '#/components/schemas/_passenger_post_400_response'
+          description: Bad Request. See error message.
+        "401":
+          description: Unauthorized. You must authenticate.
+        "429":
+          description: Too Many Requests. Please slow down.
+          headers:
+            Retry-After:
+              explode: false
+              schema:
+                type: integer
+              style: simple
+        "500":
+          description: Internal Server Error. Please try again later.
+      summary: Create a Passenger Trip Request
+      tags:
+      - Passenger Trip Request
+  /driver_journeys:
+    get:
+      description: Route used to retrieve a collection of punctual planned outward
+        driver journeys matching the provided criteria.
+      operationId: getDriverJourneys
+      parameters:
+      - description: Latitude of searched departure point.
+        explode: true
+        in: query
+        name: departureLat
+        required: true
+        schema:
+          type: number
+        style: form
+      - description: Longitude of searched departure point.
+        explode: true
+        in: query
+        name: departureLng
+        required: true
+        schema:
+          type: number
+        style: form
+      - description: Departure datetime using a UNIX UTC timestamp in seconds.
+        explode: true
+        in: query
+        name: departureDate
+        required: true
+        schema:
+          type: integer
+        style: form
+      - description: The operator's FQDN.
+        explode: true
+        in: query
+        name: operator
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/PunctualDriverJourney'
+                    - $ref: '#/components/schemas/RegularDriverJourney'
                 title: DriverJourneys
                 type: array
-                items:
-                  $ref: '#/components/schemas/DriverJourney'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        429:
-          $ref: '#/components/responses/TooManyRequests'
-        500:
-          $ref: '#/components/responses/InternalServerError'
-
+          description: Ok. Request processed successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_passenger_post_400_response'
+          description: Bad Request. See error message.
+        "401":
+          description: Unauthorized. You must authenticate.
+        "429":
+          description: Too Many Requests. Please slow down.
+          headers:
+            Retry-After:
+              explode: false
+              schema:
+                type: integer
+              style: simple
+        "500":
+          description: Internal Server Error. Please try again later.
+      summary: Search for matching punctual planned outward driver journeys.
+      tags:
+      - Search
   /driver_regular_availabilities:
     post:
-      tags: 
-      - Driver Availability and Schedule
-      summary: Set Regular Driver Availabilities
       requestBody:
-        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/DriverRegularAvailabilitiesRequest'
+        required: true
       responses:
-         201:
+        "201":
           description: Regular driver availabilities set successfully.
-         400:
-          $ref: '#/components/responses/BadRequest'
-         429:
-          $ref: '#/components/responses/TooManyRequests'
-         500:
-          $ref: '#/components/responses/InternalServerError'
-
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_passenger_post_400_response'
+          description: Bad Request. See error message.
+        "429":
+          description: Too Many Requests. Please slow down.
+          headers:
+            Retry-After:
+              explode: false
+              schema:
+                type: integer
+              style: simple
+        "500":
+          description: Internal Server Error. Please try again later.
+      summary: Set Regular Driver Availabilities
+      tags:
+      - Driver Availability and Schedule
   /driver_punctual_availabilities:
     post:
-      tags: 
-      - Driver Availability and Schedule
-      summary: Set Punctual Driver Availabilities
       requestBody:
-        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/DriverPunctualAvailabilitiesRequest'
+        required: true
       responses:
-         201:
+        "201":
           description: Punctual driver availabilities set successfully.
-         400:
-          $ref: '#/components/responses/BadRequest'
-         429:
-          $ref: '#/components/responses/TooManyRequests'
-         500:
-          $ref: '#/components/responses/InternalServerError'
-          
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_passenger_post_400_response'
+          description: Bad Request. See error message.
+        "429":
+          description: Too Many Requests. Please slow down.
+          headers:
+            Retry-After:
+              explode: false
+              schema:
+                type: integer
+              style: simple
+        "500":
+          description: Internal Server Error. Please try again later.
+      summary: Set Punctual Driver Availabilities
+      tags:
+      - Driver Availability and Schedule
   /messages:
     post:
-      tags:
-      - Interact
-      summary: Send a message to the owner of a retrieved journey.
-      description: Route used to allow a user to connect back to the owner of a retrieved journey through a texte message.
+      description: Route used to allow a user to connect back to the owner of a retrieved
+        journey through a texte message.
       operationId: postConnections
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - from
-                - to
-                - message
-                - recipientCarpoolerType
-              properties:
-                from:
-                  $ref: '#/components/schemas/User'
-                to:
-                  $ref: '#/components/schemas/User'
-                message:
-                  type: string
-                  maxLength: 500
-                  description: Free text content of a message. The message can contain all the details (phone number, email, etc.) allowing the recipient to call back the sender in order to carpool with him/her.
-                recipientCarpoolerType:
-                  type: string
-                  enum:
-                    - DRIVER
-                    - PASSENGER
-                  default: DRIVER
-                  description: Defines if the recipient of this message is either the driver or the passenger.
-                driverJourneyId:
-                  type: string
-                  minLength: 1
-                  maxLength: 255
-                  description: ID of the Driver's journey to which the message is related (if any). Unique given the `Driver`'s `operator` property.
-                passengerJourneyId:
-                  type: string
-                  minLength: 1
-                  maxLength: 255
-                  description: ID of the Passenger's journey to which the message is related (if any). Unique given the `Passenger`'s `operator` property.
-                bookingId:
-                  allOf:
-                    - $ref: '#/components/schemas/bookingId'
-                  description: ID of the booking to which the message is related (if any)
-
+              $ref: '#/components/schemas/postConnections_request'
       responses:
-        201:
+        "201":
           description: Successful operation.
-        404:
+        "404":
           description: The targeted journey or user no more exists.
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        429:
-          $ref: '#/components/responses/TooManyRequests'
-        500:
-          $ref: '#/components/responses/InternalServerError'
-
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_passenger_post_400_response'
+          description: Bad Request. See error message.
+        "401":
+          description: Unauthorized. You must authenticate.
+        "429":
+          description: Too Many Requests. Please slow down.
+          headers:
+            Retry-After:
+              explode: false
+              schema:
+                type: integer
+              style: simple
+        "500":
+          description: Internal Server Error. Please try again later.
+      summary: Send a message to the owner of a retrieved journey.
+      tags:
+      - Interact
   /bookings:
     get:
-      tags:
-      - Bookings Filter
-      summary: Filter and retrieve bookings by status, type, and ID.
-      description: Route used to filter and retrieve bookings based on the specified status, type, and ID.
+      description: "Route used to filter and retrieve bookings based on the specified\
+        \ status, type, and ID."
       operationId: filterBookingsByStatus
       parameters:
-      - name: operator
+      - description: The operator's FQDN.
+        explode: true
         in: query
-        description: The operator's FQDN.
+        name: operator
         required: true
         schema:
           type: string
-      - name: status
-        description: The status of the bookings to filter.
+        style: form
+      - description: The status of the bookings to filter.
+        explode: true
         in: query
+        name: status
         required: true
         schema:
-          type: string
           enum:
           - WAITING_DRIVER_CONFIRMATION
           - WAITING_PASSENGER_CONFIRMATION
@@ -197,610 +234,812 @@ paths:
           - CANCELLED
           - COMPLETED_PENDING_VALIDATION
           - VALIDATED
-      - name: filterType
+          type: string
+        style: form
+      - explode: true
         in: query
+        name: filterType
         required: true
         schema:
-          type: string
           enum:
           - driver
           - passenger
-      - name: Id
-        description: The ID (UUID) used.
+          type: string
+        style: form
+      - description: The ID (UUID) used.
+        explode: true
         in: query
+        name: Id
         required: true
         schema:
-          type: string  # Assuming UUID format
-          format: uuid   # Specify UUID format
+          format: uuid
+          type: string
+        style: form
       responses:
-        200:
-          description: Successful operation. Bookings matching the specified status, type, and ID.
+        "200":
           content:
             application/json:
               schema:
-                type: array
                 items:
                   $ref: '#/components/schemas/Booking'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        429:
-          $ref: '#/components/responses/TooManyRequests'
-        500:
-          $ref: '#/components/responses/InternalServerError'
-        404:
-          description: No bookings found for the specified status, type, and ID.
+                type: array
+          description: "Successful operation. Bookings matching the specified status,\
+            \ type, and ID."
+        "400":
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-
-
-    post:
+                $ref: '#/components/schemas/_passenger_post_400_response'
+          description: Bad Request. See error message.
+        "401":
+          description: Unauthorized. You must authenticate.
+        "429":
+          description: Too Many Requests. Please slow down.
+          headers:
+            Retry-After:
+              explode: false
+              schema:
+                type: integer
+              style: simple
+        "500":
+          description: Internal Server Error. Please try again later.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_passenger_post_400_response'
+          description: "No bookings found for the specified status, type, and ID."
+      summary: "Filter and retrieve bookings by status, type, and ID."
       tags:
-      - Interact
-      summary: Create a punctual outward Booking request.
-      description: Route used to synchronize a Booking request initiated by a platform to the second platform involved in the shared punctual outward journey. While posting a new Booking, its status must always be set first as `status=WAITING_CONFIRMATION`. 
+      - Bookings Filter
+    post:
+      description: "Route used to synchronize a Booking request initiated by a platform\
+        \ to the second platform involved in the shared punctual outward journey.\
+        \ While posting a new Booking, its status must always be set first as `status=WAITING_CONFIRMATION`."
       operationId: postBookings
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/BookingRequest'
-
       responses:
-        201:
-          description: Successful operation. A new Booking has been created.
+        "201":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Booking'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        429:
-          $ref: '#/components/responses/TooManyRequests'
-        500:
-          $ref: '#/components/responses/InternalServerError'
-
-  /bookings/{bookingId}:
-    patch:
+          description: Successful operation. A new Booking has been created.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_passenger_post_400_response'
+          description: Bad Request. See error message.
+        "401":
+          description: Unauthorized. You must authenticate.
+        "429":
+          description: Too Many Requests. Please slow down.
+          headers:
+            Retry-After:
+              explode: false
+              schema:
+                type: integer
+              style: simple
+        "500":
+          description: Internal Server Error. Please try again later.
+      summary: Create a punctual outward Booking request.
       tags:
       - Interact
-      summary: Updates status of an existing Booking request.
-      description: Route used to update the status of an existing Booking request. Should be used usually just to confirm, cancel, etc. an existing Booking.
-      operationId: patchBookings
+  /bookings/{bookingId}:
+    get:
+      description: "Route used to retrieve the details of an existing Booking request.\
+        \ Can only be used by the operator having created the Booking request. This\
+        \ route is provided to check if the Booking object state is similar between\
+        \ two operators, but its usage should be required to handle the full use case\
+        \ of a booking."
+      operationId: getBookings
       parameters:
-      - name: operator
+      - description: The operator's FQDN.
+        explode: true
         in: query
-        description: The operator's FQDN.
+        name: operator
         required: true
         schema:
-          type: string      
-      - name: bookingId
+          type: string
+        style: form
+      - explode: false
         in: path
+        name: bookingId
         required: true
         schema:
           $ref: '#/components/schemas/bookingId'
-      - name: status
-        description: New status of the Booking.
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+          description: Successful operation.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_passenger_post_400_response'
+          description: Bad Request. See error message.
+        "401":
+          description: Unauthorized. You must authenticate.
+        "429":
+          description: Too Many Requests. Please slow down.
+          headers:
+            Retry-After:
+              explode: false
+              schema:
+                type: integer
+              style: simple
+        "500":
+          description: Internal Server Error. Please try again later.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getBookings_404_response'
+          description: "This Booking object no more exists. Error code can be among\
+            \  `missing_journey, missing_booking, missing_user` ."
+      summary: Retrieves an existing Booking request.
+      tags:
+      - Interact
+    patch:
+      description: "Route used to update the status of an existing Booking request.\
+        \ Should be used usually just to confirm, cancel, etc. an existing Booking."
+      operationId: patchBookings
+      parameters:
+      - description: The operator's FQDN.
+        explode: true
         in: query
+        name: operator
+        required: true
+        schema:
+          type: string
+        style: form
+      - explode: false
+        in: path
+        name: bookingId
+        required: true
+        schema:
+          $ref: '#/components/schemas/bookingId'
+        style: simple
+      - description: New status of the Booking.
+        explode: true
+        in: query
+        name: status
         required: true
         schema:
           $ref: '#/components/schemas/bookingStatus'
-      - name: message
-        description: Free text content of a message. The message can contain explanations on the status change.
+        style: form
+      - description: Free text content of a message. The message can contain explanations
+          on the status change.
+        explode: true
         in: query
+        name: message
+        required: false
         schema:
-          type: string
           maxLength: 500
-
+          type: string
+        style: form
       responses:
-        200:
+        "200":
           description: Successful operation.
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        429:
-          $ref: '#/components/responses/TooManyRequests'
-        500:
-          $ref: '#/components/responses/InternalServerError'
-        404:
-          description: The targeted journey, booking or user no more exists.  Error code can be among  `missing_journey, missing_booking, missing_user` .
+        "400":
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |-
-                                            Explain why the request couldn't be processed.
-        409:
-          description: Conflict. This booking has already the new status requested. Error code is  `status_already_set`.
+                $ref: '#/components/schemas/_passenger_post_400_response'
+          description: Bad Request. See error message.
+        "401":
+          description: Unauthorized. You must authenticate.
+        "429":
+          description: Too Many Requests. Please slow down.
+          headers:
+            Retry-After:
+              explode: false
+              schema:
+                type: integer
+              style: simple
+        "500":
+          description: Internal Server Error. Please try again later.
+        "404":
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |-
-                                            Explain why the request couldn't be processed.
-
-
-    get:
+                $ref: '#/components/schemas/getBookings_404_response'
+          description: "The targeted journey, booking or user no more exists.  Error\
+            \ code can be among  `missing_journey, missing_booking, missing_user`\
+            \ ."
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getBookings_404_response'
+          description: Conflict. This booking has already the new status requested.
+            Error code is  `status_already_set`.
+      summary: Updates status of an existing Booking request.
       tags:
       - Interact
-      summary: Retrieves an existing Booking request.
-      description: Route used to retrieve the details of an existing Booking request. Can only be used by the operator having created the Booking request. This route is provided to check if the Booking object state is similar between two operators, but its usage should be required to handle the full use case of a booking.
-      operationId: getBookings
-      parameters:
-      - name: operator
-        in: query
-        description: The operator's FQDN.
-        required: true
-        schema:
-          type: string
-      - name: bookingId
-        in: path
-        required: true
-        schema:
-          $ref: '#/components/schemas/bookingId'
-      responses:
-        200:
-          description: Successful operation.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Booking'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        429:
-          $ref: '#/components/responses/TooManyRequests'
-        500:
-          $ref: '#/components/responses/InternalServerError'
-        404:
-          description: This Booking object no more exists. Error code can be among  `missing_journey, missing_booking, missing_user` .
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: |-
-                      Explain why the request couldn't be processed.
-                                            
-
-
- 
 components:
   parameters:
     departureLat:
-      name: departureLat
-      in: query
-      required: true
-      schema:
-        type: number
       description: Latitude of searched departure point.
-
+      explode: true
+      in: query
+      name: departureLat
+      required: true
+      schema:
+        type: number
+      style: form
     departureLng:
-      name: departureLng
-      in: query
       description: Longitude of searched departure point.
+      explode: true
+      in: query
+      name: departureLng
       required: true
       schema:
         type: number
-
+      style: form
     arrivalLat:
-      name: arrivalLat
-      in: query
       description: Latitude of searched arrival point.
+      explode: true
+      in: query
+      name: arrivalLat
       required: true
       schema:
         type: number
-
+      style: form
     arrivalLng:
-      name: arrivalLng
-      in: query
       description: Longitude of searched arrival point.
+      explode: true
+      in: query
+      name: arrivalLng
       required: true
       schema:
         type: number
-
+      style: form
     departureDate:
-      name: departureDate
-      in: query
       description: Departure datetime using a UNIX UTC timestamp in seconds.
+      explode: true
+      in: query
+      name: departureDate
       required: true
       schema:
         type: integer
-
+      style: form
     departureTimeOfDay:
-      name: departureTimeOfDay
+      description: "Departure time of day represented as [RFC3339 partial-time](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6)."
+      example: 07:30:00
+      explode: true
       in: query
-      description:
-        Departure time of day represented as
-        [RFC3339 partial-time](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6).
+      name: departureTimeOfDay
       required: true
       schema:
-        type: string
         format: partial-time
-      example: 07:30:00
-
+        type: string
+      style: form
     timeDelta:
+      description: Time margin in seconds. The retrieved journeys must match the given
+        time parameters within a +`timeDelta` / -`timeDelta` interval .
+      explode: true
+      in: query
       name: timeDelta
-      in: query
-      description: Time margin in seconds. The retrieved journeys must match the
-        given time parameters within a +`timeDelta` / -`timeDelta` interval .
+      required: false
       schema:
-        type: integer
         default: 900
-
+        type: integer
+      style: form
     minDepartureDate:
+      description: Minimum date of departure for the returned journeys. Datetime using
+        a UNIX UTC timestamp in seconds.
+      explode: true
+      in: query
       name: minDepartureDate
-      in: query
-      description:
-        Minimum date of departure for the returned journeys. Datetime using
-        a UNIX UTC timestamp in seconds.
+      required: false
       schema:
         type: integer
-
+      style: form
     maxDepartureDate:
-      name: maxDepartureDate
-      in: query
-      description:
-        Maximum date of departure for the returned journeys. Datetime using
+      description: Maximum date of departure for the returned journeys. Datetime using
         a UNIX UTC timestamp in seconds.
+      explode: true
+      in: query
+      name: maxDepartureDate
+      required: false
       schema:
         type: integer
-
+      style: form
     departureRadius:
-      name: departureRadius
-      in: query
       description: Search radius in kilometers around the departure point.
+      explode: true
+      in: query
+      name: departureRadius
+      required: false
       schema:
-        type: number
         default: 1.0
-
+        type: number
+      style: form
     arrivalRadius:
-      name: arrivalRadius
-      in: query
       description: Search radius in kilometers around the arrival point.
-      schema:
-        type: number
-        default: 1.0
-
-    count:
-      name: count
+      explode: true
       in: query
-      description:
-        Maximum number of returned results. If missing, all matching results
-        are returned.
+      name: arrivalRadius
+      required: false
+      schema:
+        default: 1.0
+        type: number
+      style: form
+    count:
+      description: "Maximum number of returned results. If missing, all matching results\
+        \ are returned."
+      explode: true
+      in: query
+      name: count
+      required: false
       schema:
         type: integer
+      style: form
+  responses:
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/_passenger_post_400_response'
+      description: Bad Request. See error message.
+    Unauthorized:
+      description: Unauthorized. You must authenticate.
+    TooManyRequests:
+      description: Too Many Requests. Please slow down.
+      headers:
+        Retry-After:
+          explode: false
+          schema:
+            type: integer
+          style: simple
+    InternalServerError:
+      description: Internal Server Error. Please try again later.
   schemas:
-    DriverJourney:
-      type: object
+    PunctualDriverJourney:
       allOf:
-        - $ref: '#/components/schemas/DriverTrip'
-        - $ref: '#/components/schemas/JourneySchedule'
-        - type: object
-          properties:
-            price:
-              $ref: '#/components/schemas/Price'
+      - $ref: '#/components/schemas/DriverTrip'
+      - $ref: '#/components/schemas/JourneySchedule'
+      - properties:
+          price:
+            $ref: '#/components/schemas/Price'
+          driver_departure_Address:
+            type: string 
 
+          punctual_availabilities:
+            $ref: '#/components/schemas/PunctualAvailabilitySlot'
+        
+        
+      type: object
+    RegularDriverJourney:
+      allOf:
+      - $ref: '#/components/schemas/DriverTrip'
+      - $ref: '#/components/schemas/JourneySchedule'
+      - properties:
+          price:
+            $ref: '#/components/schemas/Price'
+          driver_departure_Address:
+            type: string 
+          regular_availabilities:
+            $ref: '#/components/schemas/RegularAvailabilitySlot'
 
+        
+        
+      type: object
     Price:
-      type: object
+      example:
+        amount: 9.301444
+        currency: currency
+        type: FREE
       properties:
-        type:
-          type: string
-          description: |-
-            Either « FREE », « PAYING » or « UNKNOWN ». « UNKNOWN » is given
-            when it should be « PAYING » but we cannot set the price yet.            
-          enum:
-          - FREE
-          - PAYING
-          - UNKNOWN
         amount:
-          type: number
-          description: Carpooling passenger cost estimate. In the case of integrated booking by API, amount expected by the carpooling operator.
+          description: "Carpooling passenger cost estimate. In the case of integrated\
+            \ booking by API, amount expected by the carpooling operator."
           format: float
+          type: number
         currency:
-          type: string
           description: ISO 4217 code representing the currency of the price.
-    Car:
+          type: string
       type: object
+    Car:
+      example:
+        model: model
+        brand: brand
       properties:
         model:
-          type: string
           description: Model of the car.
-        brand:
           type: string
+        brand:
           description: Brand of the car.
-    User:
+          type: string
       type: object
-      required:
-        - id
-        - alias
-        - operator
+    User:
+      example:
+        firstName: firstName
+        lastName: lastName
+        gender: F
+        grade: 1
+        alias: alias
+        id: id
+        verifiedIdentity: true
+        operator: operator
+        picture: picture
       properties:
         id:
-          type: string
           description: User's identifier. It MUST be unique for a given `operator`.
+          type: string
         operator:
+          description: The operator identifier. MUST be a Fully Qualified Domain Name
+            (example carpool.mycity.com) owned by the operator or a Partially Qualified
+            Domain Name (example operator.org) owned and exclusively operated by the
+            operator. Operators SHOULD always send the same value.
           type: string
-          description: The operator identifier. MUST be a Fully Qualified Domain Name (example carpool.mycity.com) owned by the operator or a Partially Qualified Domain Name (example operator.org) owned and exclusively operated by the operator. Operators SHOULD always send the same value.
         alias:
-          type: string
           description: User's alias.
+          type: string
         firstName:
-          type: string
           description: User's first name.
+          type: string
         lastName:
-          type: string
           description: User's last name.
+          type: string
         grade:
-          type: integer
-          minimum: 1
-          maximum: 5
           description: User's grade from 1 to 5.
+          maximum: 5
+          minimum: 1
+          type: integer
         picture:
-          type: string
           description: User's profile picture absolute URL.
-        gender:
           type: string
+        gender:
           description: User's gender. 'O' stands for 'Other'.
           enum:
-            - F
-            - M
-            - O
+          - F
+          - M
+          - O
+          type: string
         verifiedIdentity:
+          description: "true if the identity of this user has been verified by the\
+            \ operator or a third party; and the firstName, lastName, birthdate have\
+            \ been confirmed as identitical to an official identity proof document.\
+            \ Can be left empty if the information is not available."
           type: boolean
-          description: true if the identity of this user has been verified by the operator or a third party; and the firstName, lastName, birthdate have been confirmed as identitical to an official identity proof document. Can be left empty if the information is not available.
-
-          
+      required:
+      - alias
+      - id
+      - operator
+      type: object
     DriverTrip:
-      type: object
       allOf:
-        - type: object
-          required:
-            - user
-          properties:
-            user:
-              $ref: '#/components/schemas/User'
-                
-            car:
-              $ref: '#/components/schemas/Car'
-              
-    PassengerTripRequest:
-          type: object
-          properties:
-            user:
-              $ref: "#/components/schemas/User"
-            destination_address:
-              type: string
-            destination_latitude:
-              type: number
-              format: double
-            destination_longitude:
-              type: number
-              format: double
-            departure_address:
-              type: string
-            departure_latitude:
-              type: number
-              format: double
-            departure_longitude:
-              type: number
-              format: double
-            departure_date:
-              type: integer
-              description: Departure datetime using a UNIX UTC timestamp in seconds.
-            preferences:
-              $ref: "#/components/schemas/Preferences"
-          required:
-            - user
-            - destination_address
-            - destination_latitude
-            - destination_longitude
-            - departure_address
-            - departure_latitude
-            - departure_longitude
-            - departure_date
-    Preferences:
+      - properties:
+          user:
+            $ref: '#/components/schemas/User'
+          car:
+            $ref: '#/components/schemas/Car'
+        required:
+        - user
+        type: object
       type: object
+    PassengerTripRequest:
+      example:
+        departure_address: departure_address
+        preferences:
+          music: true
+          luggageSize: 3
+          smoking: true
+          animals: true
+          isTalker: true
+        destination_address: destination_address
+        departure_longitude: 5.637376656633329
+        destination_latitude: 6.027456183070403
+        departure_date: 2
+        destination_longitude: 1.4658129805029452
+        user:
+          firstName: firstName
+          lastName: lastName
+          gender: F
+          grade: 1
+          alias: alias
+          id: id
+          verifiedIdentity: true
+          operator: operator
+          picture: picture
+        departure_latitude: 5.962133916683182
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        destination_address:
+          type: string
+        destination_latitude:
+          format: double
+          type: number
+        destination_longitude:
+          format: double
+          type: number
+        departure_address:
+          type: string
+        departure_latitude:
+          format: double
+          type: number
+        departure_longitude:
+          format: double
+          type: number
+        departure_date:
+          description: Departure datetime using a UNIX UTC timestamp in seconds.
+          type: integer
+        preferences:
+          $ref: '#/components/schemas/Preferences'
+      required:
+      - departure_address
+      - departure_date
+      - departure_latitude
+      - departure_longitude
+      - destination_address
+      - destination_latitude
+      - destination_longitude
+      - user
+      type: object
+    Preferences:
+      example:
+        music: true
+        luggageSize: 3
+        smoking: true
+        animals: true
+        isTalker: true
       properties:
         smoking:
+          description: "If driver journey, specifies if the driver allows smoking\
+            \ in the car."
           type: boolean
-          description: |-
-                        If driver journey, specifies if the driver allows smoking in the car.
         animals:
+          description: "If driver journey, specifies if the driver allows animals\
+            \ in the car."
           type: boolean
-          description: |-
-                        If driver journey, specifies if the driver allows animals in the car.
         music:
+          description: "If driver journey, specifies if the driver enjoys music in\
+            \ the car."
           type: boolean
-          description: |-
-                        If driver journey, specifies if the driver enjoys music in the car.
         isTalker:
+          description: "If driver journey, specifies if the driver enjoys talking\
+            \ with passengers."
           type: boolean
-          description: |-
-                        If driver journey, specifies if the driver enjoys talking with passengers.
         luggageSize:
-          type: integer
-          minimum: 1
-          maximum: 5
           description: |-
             If driver journey, specifies the size of allowed luggages.
-            From very small (1) to very big (5).            
+            From very small (1) to very big (5).
+          maximum: 5
+          minimum: 1
+          type: integer
+      type: object
     bookingId:
-      type: string
+      description: "Booking id is common between both operators, and must be created\
+        \ as a [UUID](https://datatracker.ietf.org/doc/html/rfc4122) by whoever initiates\
+        \ the booking.  Usage of a [4 UUID](https://datatracker.ietf.org/doc/html/rfc4122#section-4.4)\
+        \ generation algorithm is advised."
       format: uuid
-      description: Booking id is common between both operators, and must be created as a [UUID](https://datatracker.ietf.org/doc/html/rfc4122) by whoever initiates the booking.  Usage of a [4 UUID](https://datatracker.ietf.org/doc/html/rfc4122#section-4.4) generation algorithm is advised.
+      type: string
     passengerId:
-      type: string
       format: uuid
+      type: string
     driverId:
-      type: string
       format: uuid
+      type: string
     JourneySchedule:
-      type: object
-      required:
-        - passengerPickupDate
-        - type
       properties:
-
-        passengerPickupDate:
-          type: number
-          description: |-
-                        Passenger pickup datetime as a UNIX UTC timestamp in seconds.
+        driver_departure_Date:
+          description: Driver pickup datetime as a UNIX UTC timestamp in seconds.
           format: long
-        driverDepartureDate:
           type: number
-          description: |-
-                        Driver departure datetime as a UNIX UTC timestamp in seconds.
-          format: long
-
-        type:
-          type: string
-          description: |-
-                        Type of journey. A dynamic journey is happening in real time.
-          enum:
-          - PLANNED
-          - DYNAMIC
-          - LINE
-          
+      required:
+      - driver_departure_Date
+      type: object
     BookingRequest:
-      type: object
-      required:
-        - id
-        - status
-        - passengerId
-        - driverId
-        - operator
+      example:
+        driverId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        passengerId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        operator: operator
+        status: null
       properties:
-    
         id:
-          $ref: '#/components/schemas/bookingId'
+          description: "Booking id is common between both operators, and must be created\
+            \ as a [UUID](https://datatracker.ietf.org/doc/html/rfc4122) by whoever\
+            \ initiates the booking.  Usage of a [4 UUID](https://datatracker.ietf.org/doc/html/rfc4122#section-4.4)\
+            \ generation algorithm is advised."
+          format: uuid
+          type: string
         passengerId:
-          $ref: '#/components/schemas/passengerId'
+          format: uuid
+          type: string
         driverId:
-          $ref: '#/components/schemas/driverId'
+          format: uuid
+          type: string
         status:
           $ref: '#/components/schemas/bookingStatus'
         operator:
           type: string
-
-          
-
-    Booking:
-      type: object
       required:
-        - id
-        - driver
-        - passenger
-        - status
-        - price
-        - passengerPickupDate
-        - passengerPickupLat
-        - passengerPickupLng
-        - passengerDropLat
-        - passengerDropLng
+      - driverId
+      - id
+      - operator
+      - passengerId
+      - status
+      type: object
+    Booking:
+      example:
+        passengerDropLng: 5.637376656633329
+        distance: 7
+        passengerDropLat: 5.962133916683182
+        passengerPickupDate: 0.8008281904610115
+        passengerDropAddress: passengerDropAddress
+        passengerPickupAddress: passengerPickupAddress
+        passengerPickupLng: 1.4658129805029452
+        duration: 2
+        driver:
+          firstName: firstName
+          lastName: lastName
+          gender: F
+          grade: 1
+          alias: alias
+          id: id
+          verifiedIdentity: true
+          operator: operator
+          picture: picture
+        passenger:
+          firstName: firstName
+          lastName: lastName
+          gender: F
+          grade: 1
+          alias: alias
+          id: id
+          verifiedIdentity: true
+          operator: operator
+          picture: picture
+        car:
+          model: model
+          brand: brand
+        passengerPickupLat: 6.027456183070403
+        price:
+          amount: 9.301444
+          currency: currency
+          type: FREE
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        status: null
       properties:
         id:
-          $ref: '#/components/schemas/bookingId'
+          description: "Booking id is common between both operators, and must be created\
+            \ as a [UUID](https://datatracker.ietf.org/doc/html/rfc4122) by whoever\
+            \ initiates the booking.  Usage of a [4 UUID](https://datatracker.ietf.org/doc/html/rfc4122#section-4.4)\
+            \ generation algorithm is advised."
+          format: uuid
+          type: string
         driver:
           $ref: '#/components/schemas/User'
         passenger:
           $ref: '#/components/schemas/User'
         passengerPickupDate:
-          type: number
           description: Passenger pickup datetime as a UNIX UTC timestamp in seconds.
           format: long
+          type: number
         passengerPickupLat:
-          type: "number"
-          format: "double"
           description: Latitude of the passenger pick-up point.
+          format: double
+          type: number
         passengerPickupLng:
-          type: "number"
-          format: "double"
           description: Longitude of the passenger pick-up point.
+          format: double
+          type: number
         passengerDropLat:
-          type: "number"
-          format: "double"
           description: Latitude of the passenger drop-off point.
+          format: double
+          type: number
         passengerDropLng:
-          type: "number"
-          format: "double"
           description: Longitude of the passenger drop-off point.
+          format: double
+          type: number
         passengerPickupAddress:
-          type: string
           description: String representing the pickup-up address.
-        passengerDropAddress:
           type: string
+        passengerDropAddress:
           description: String representing the drop-off address.
+          type: string
         status:
           $ref: '#/components/schemas/bookingStatus'
         duration:
-          type: integer
           description: Carpooling duration in seconds.
-        distance:
           type: integer
+        distance:
           description: |
-                        Carpooling distance in meters.
+            Carpooling distance in meters.
+          type: integer
         price:
           $ref: '#/components/schemas/Price'
         car:
           $ref: '#/components/schemas/Car'
-
-
-
-        
+      required:
+      - driver
+      - id
+      - passenger
+      - passengerDropLat
+      - passengerDropLng
+      - passengerPickupDate
+      - passengerPickupLat
+      - passengerPickupLng
+      - price
+      - status
+      type: object
     bookingStatus:
-      type: string
+      default: WAITING_DRIVER_CONFIRMATION
       description: Status of the booking.
       enum:
-        - WAITING_DRIVER_CONFIRMATION
-        - WAITING_PASSENGER_CONFIRMATION
-        - CONFIRMED
-        - CANCELLED
-        - COMPLETED_PENDING_VALIDATION
-        - VALIDATED
-      default: WAITING_DRIVER_CONFIRMATION
-      
+      - WAITING_DRIVER_CONFIRMATION
+      - WAITING_PASSENGER_CONFIRMATION
+      - CONFIRMED
+      - CANCELLED
+      - COMPLETED_PENDING_VALIDATION
+      - VALIDATED
+      type: string
     DriverRegularAvailabilitiesRequest:
-      type: object
+      example:
+        preferences:
+          music: true
+          luggageSize: 3
+          smoking: true
+          animals: true
+          isTalker: true
+        address: address
+        car:
+          model: model
+          brand: brand
+        availabilities:
+        - dayOfWeek: MON
+          startTime: startTime
+          endTime: endTime
+        - dayOfWeek: MON
+          startTime: startTime
+          endTime: endTime
+        latitude: 0.8008281904610115
+        radius: 1
+        user:
+          firstName: firstName
+          lastName: lastName
+          gender: F
+          grade: 1
+          alias: alias
+          id: id
+          verifiedIdentity: true
+          operator: operator
+          picture: picture
+        longitude: 6.027456183070403
       properties:
         address:
-          type: string
           description: The address or location description.
+          type: string
         latitude:
-          type: number
-          format: double
           description: The latitude coordinate of the location.
-        longitude:
-          type: number
           format: double
+          type: number
+        longitude:
           description: The longitude coordinate of the location.
+          format: double
+          type: number
         radius:
-          type: integer
-          format: int32
           description: The radius around the location.
+          format: int32
+          type: integer
         availabilities:
-          type: array
           items:
             $ref: '#/components/schemas/RegularAvailabilitySlot'
+          type: array
         user:
           $ref: '#/components/schemas/User'
         preferences:
@@ -808,115 +1047,181 @@ components:
         car:
           $ref: '#/components/schemas/Car'
       required:
-        - address
-        - latitude
-        - longitude
-        - radius
-        - availabilities
-        - user
-        
-
-    DriverPunctualAvailabilitiesRequest:
+      - address
+      - availabilities
+      - latitude
+      - longitude
+      - radius
+      - user
       type: object
+    DriverPunctualAvailabilitiesRequest:
+      example:
+        preferences:
+          music: true
+          luggageSize: 3
+          smoking: true
+          animals: true
+          isTalker: true
+        address: address
+        car:
+          model: model
+          brand: brand
+        availabilities:
+        - date: 5
+          startTime: startTime
+          endTime: endTime
+        - date: 5
+          startTime: startTime
+          endTime: endTime
+        latitude: 0.8008281904610115
+        radius: 1
+        user:
+          firstName: firstName
+          lastName: lastName
+          gender: F
+          grade: 1
+          alias: alias
+          id: id
+          verifiedIdentity: true
+          operator: operator
+          picture: picture
+        longitude: 6.027456183070403
       properties:
         address:
-          type: string
           description: The address or location description.
+          type: string
         latitude:
-          type: number
-          format: double
           description: The latitude coordinate of the location.
-        longitude:
-          type: number
           format: double
+          type: number
+        longitude:
           description: The longitude coordinate of the location.
+          format: double
+          type: number
         radius:
-          type: integer
-          format: int32
           description: The radius around the location.
+          format: int32
+          type: integer
         availabilities:
-          type: array
           items:
             $ref: '#/components/schemas/PunctualAvailabilitySlot'
+          type: array
         user:
-            $ref: '#/components/schemas/User'
-        preferences:  # Adding Preferences section within the Driver section
-            $ref: '#/components/schemas/Preferences'
+          $ref: '#/components/schemas/User'
+        preferences:
+          $ref: '#/components/schemas/Preferences'
         car:
-            $ref: '#/components/schemas/Car'
+          $ref: '#/components/schemas/Car'
       required:
-        - address
-        - latitude
-        - longitude
-        - radius
-        - availabilities
-        - user
-
-    RegularAvailabilitySlot:
+      - address
+      - availabilities
+      - latitude
+      - longitude
+      - radius
+      - user
       type: object
-      required:
-        - dayOfWeek
-        - startTime
-        - endTime
+    RegularAvailabilitySlot:
+      example:
+        dayOfWeek: MON
+        startTime: startTime
+        endTime: endTime
       properties:
         dayOfWeek:
-          type: string
-          enum:
-            - MON
-            - TUE
-            - WED
-            - THU
-            - FRI
-            - SAT
-            - SUN
           description: Day of the week for regular scheduling.
+          enum:
+          - MON
+          - TUE
+          - WED
+          - THU
+          - FRI
+          - SAT
+          - SUN
+          type: string
         startTime:
-          type: string
-          format: partial-time
           description: Start time for regular scheduling (RFC3339 partial-time).
-        endTime:
-          type: string
           format: partial-time
+          type: string
+        endTime:
           description: End time for regular scheduling (RFC3339 partial-time).
-    
-
-    PunctualAvailabilitySlot:
-      type: object
+          format: partial-time
+          type: string
       required:
-        - date
-        - startTime
-        - endTime
+      - dayOfWeek
+      - endTime
+      - startTime
+      type: object
+    PunctualAvailabilitySlot:
+      example:
+        date: 5
+        startTime: startTime
+        endTime: endTime
       properties:
         date:
-          type: integer
           description: UNIX UTC timestamp in seconds.
+          type: integer
         startTime:
-          type: string
-          format: partial-time
           description: Start time for punctual scheduling (RFC3339 partial-time).
-        endTime:
-          type: string
           format: partial-time
+          type: string
+        endTime:
           description: End time for punctual scheduling (RFC3339 partial-time).
-  responses:
-    BadRequest:
-      description: Bad Request. See error message.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-    Unauthorized:
-      description: Unauthorized. You must authenticate.
-    TooManyRequests:
-      description: Too Many Requests. Please slow down.
-      headers:
-        Retry-After:
-          schema:
-            type: integer
-    InternalServerError:
-      description: Internal Server Error. Please try again later.
-      
-    
+          format: partial-time
+          type: string
+      required:
+      - date
+      - endTime
+      - startTime
+      type: object
+    _passenger_post_400_response:
+      properties:
+        error:
+          type: string
+      type: object
+    postConnections_request:
+      properties:
+        from:
+          $ref: '#/components/schemas/User'
+        to:
+          $ref: '#/components/schemas/User'
+        message:
+          description: "Free text content of a message. The message can contain all\
+            \ the details (phone number, email, etc.) allowing the recipient to call\
+            \ back the sender in order to carpool with him/her."
+          maxLength: 500
+          type: string
+        recipientCarpoolerType:
+          default: DRIVER
+          description: Defines if the recipient of this message is either the driver
+            or the passenger.
+          enum:
+          - DRIVER
+          - PASSENGER
+          type: string
+        driverJourneyId:
+          description: ID of the Driver's journey to which the message is related
+            (if any). Unique given the `Driver`'s `operator` property.
+          maxLength: 255
+          minLength: 1
+          type: string
+        passengerJourneyId:
+          description: ID of the Passenger's journey to which the message is related
+            (if any). Unique given the `Passenger`'s `operator` property.
+          maxLength: 255
+          minLength: 1
+          type: string
+        bookingId:
+          allOf:
+          - $ref: '#/components/schemas/bookingId'
+          description: ID of the booking to which the message is related (if any)
+      required:
+      - from
+      - message
+      - recipientCarpoolerType
+      - to
+      type: object
+    getBookings_404_response:
+      properties:
+        error:
+          description: Explain why the request couldn't be processed.
+          type: string
+      type: object
